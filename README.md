@@ -96,7 +96,6 @@ Anda wajib menginstal kedua alat berikut:
 #### A. Visual Studio Build Tools (C++ Compiler)
 
 - Link Unduhan: https://visualstudio.microsoft.com/downloads/
-  - Tutorial Singkat:
 1. Buka link di atas, scroll ke bawah hingga menemukan Tools for Visual Studio.
 2. Klik tombol Download pada opsi Build Tools for Visual Studio.
 3. Jalankan installer yang telah diunduh.
@@ -106,7 +105,6 @@ Anda wajib menginstal kedua alat berikut:
 #### B. CMake
 
 - Link Unduhan: https://cmake.org/download/
-  - Tutorial Singkat:
 1. Buka link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
 2. Jalankan installer.
 3. Saat proses instalas, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
