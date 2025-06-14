@@ -61,10 +61,6 @@ def create_app():
         captures_path = os.path.join(app.static_folder, 'captures')
         if not os.path.exists(captures_path):
             os.makedirs(captures_path)
-        
-        reference_faces_path = os.path.join(app.root_path, 'reference_faces')
-        if not os.path.exists(reference_faces_path):
-            os.makedirs(reference_faces_path)
             
         # Membuat semua tabel database jika belum ada
         db.create_all()

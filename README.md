@@ -1,3 +1,6 @@
+
+---
+
 # 🎓 **Hadirku** — Sistem Presensi Mahasiswa Berbasis Face Recognition
 
 **Hadirku** adalah sistem presensi cerdas berbasis pengenalan wajah (face recognition) yang dirancang untuk lingkungan akademik. Dengan teknologi ini, proses presensi menjadi lebih cepat, akurat, dan aman menggantikan metode konvensional yang rawan manipulasi dan ketidakefisienan.
@@ -16,8 +19,8 @@ Absensi manual sering kali menghadapi kendala seperti pemalsuan kehadiran, antri
 |--------------|----------------------------------------|
 | Backend      | Flask (Python)                         |
 | Database     | SQLAlchemy (SQLite/MySQL)              |
-| Frontend     | HTML, CSS, JavaScript                  |
-| Face Recognition | DeepFace, OpenCV, SFace, MTCNN     |
+| Frontend     | HTML, CSS, JavaScript, SweetAlert2                 |
+| Face Recognition | **face_recognition, dlib, OpenCV**     |
 | Embedding    | Pickle (serialisasi data wajah)        |
 
 ---
@@ -44,17 +47,30 @@ Absensi manual sering kali menghadapi kendala seperti pemalsuan kehadiran, antri
   - Melakukan analisis dan monitoring kehadiran
 - **Logout** untuk keluar dari sistem.
 
+---
 
 ## 🧠 Teknologi Face Recognition
 
-Sistem ini menggunakan `DeepFace` untuk mengekstraksi fitur wajah (disebut embedding) dari gambar yang diambil melalui webcam. Prosesnya melibatkan: Ekstraksi embedding wajah dari gambar secara real-time menggunakan model `SFace` dan detektor `OpenCV` atau `MTCNN`. Embedding tersebut dibandingkan dengan data embedding wajah yang tersimpan di database menggunakan **cosine similarity**. Jika nilai similarity di atas ambang batas (0.55), maka wajah dikenali sebagai pengguna yang cocok. Seluruh data embedding disimpan dalam bentuk biner menggunakan `pickle`, dan dicocokkan saat presensi dilakukan untuk memastikan autentikasi berbasis wajah secara cepat dan aman.
+Sistem ini mengkombinasikan beberapa library kuat untuk mencapai proses pengenalan wajah yang efisien dan akurat.
 
-Prosesnya:
+### Otak Pengenalan: `face_recognition` & `dlib`
+Inti dari sistem ini adalah library **`face_recognition`** yang dibangun di atas toolkit C++ **`dlib`**. Pendekatan ini mengubah gambar wajah menjadi representasi matematis unik yang disebut **face encoding**, yaitu sebuah "sidik jari" digital berupa vektor 128 angka. Saat absensi, *encoding* dari wajah di webcam akan dibandingkan dengan *encoding* yang tersimpan di database. Perbandingan ini menghitung **jarak (distance)** antara kedua vektor; semakin kecil jaraknya, semakin mirip wajahnya.
 
-1. Tangkap wajah dari webcam.
-2. Hasilkan *embedding* dengan DeepFace.
-3. Bandingkan dengan database menggunakan cosine similarity.
-4. Validasi kehadiran jika skor di atas ambang batas.
+### Mata & Tangan: Peran Krusial `OpenCV`
+Meskipun `dlib` menjadi otak dari proses pengenalan, **OpenCV (diimpor sebagai `cv2`)** memegang peranan pendukung yang tak kalah penting sebagai 'mata dan tangan' dari sistem:
+
+* **Pemrosesan Gambar**: Saat gambar diterima dari webcam (dalam format base64), `OpenCV` menggunakan fungsi `cv2.imdecode` untuk mengubahnya menjadi format gambar yang dapat diolah. Sebaliknya, fungsi `cv2.imwrite` digunakan untuk menyimpan foto bukti presensi ke dalam folder `static/captures`.
+
+* **Konversi Warna**: Ini adalah fungsi vital. OpenCV membaca gambar dalam format warna BGR (Blue-Green-Red), sedangkan `dlib` memerlukan format standar RGB (Red-Green-Blue). Fungsi `cv2.cvtColor` digunakan untuk mengonversi format warna ini, memastikan "otak" (`dlib`) dapat menganalisis gambar dengan benar.
+
+Singkatnya, **OpenCV menangani semua tugas manipulasi data gambar, sementara `dlib` dan `face_recognition` fokus pada analisis untuk mengenali siapa pemilik wajah tersebut.**
+
+### Prosesnya:
+
+1.  Tangkap satu foto wajah berkualitas saat pendaftaran.
+2.  Hasilkan *face encoding* (vektor 128-d) menggunakan library `face_recognition`.
+3.  Simpan *encoding* ke dalam database pengguna.
+4.  Saat absensi, bandingkan *encoding* wajah baru dengan semua *encoding* di database untuk validasi.
 
 ---
 
@@ -102,24 +118,117 @@ Akses aplikasi di browser:
 
 ---
 
+## 🚀 Cara Menjalankan Hadirku di Komputer Lokal
+
+Ikuti langkah-langkah berikut di terminal atau command prompt:
+
+### 1. Clone Repository
+
+```bash
+git clone [https://github.com/akbarnurrizqi167/hadirku-project.git](https://github.com/akbarnurrizqi167/hadirku-project.git)
+```
+```bash
+cd hadirku-project
+```
+
+### 2. Prasyarat Instalasi (Penting!)
+Sebelum menginstal dependensi Python, pastikan sistem Anda memiliki alat yang dibutuhkan untuk mengkompilasi dlib, yaitu library inti yang digunakan untuk pengenalan wajah.
+
+Untuk Pengguna Windows:
+Anda wajib menginstal kedua alat berikut:
+
+#### A. Visual Studio Build Tools (C++ Compiler)
+
+- Link Unduhan: visualstudio.microsoft.com/downloads/
+  - Tutorial Singkat:
+    1. Buka link di atas, scroll ke bawah hingga menemukan Tools for Visual Studio.
+    2. Klik tombol Download pada opsi Build Tools for Visual Studio.
+    3. Jalankan installer yang telah diunduh.
+    4. Pada tab Workloads, centang kotak "Desktop development with C++". Ini adalah langkah paling penting.
+    5. Klik "Install" di pojok kanan bawah dan tunggu hingga prosesnya selesai.
+
+#### B. CMake
+
+- Link Unduhan: cmake.org/download/
+ - tutorial Singkat:
+   1.  link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
+   2. nkan installer.
+   3.  proses instalasi, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
+   . esaikan instalasi dengan mengklik "Next" hingga "Finish".
+
+- tuk Pengguna Linux (Debian/Ubuntu):
+
+```bash
+sudo apt-get update && sudo apt-get install build-essential cmake
+```
+Setelah semua prasyarat di atas terpenuhi, restart terminal Anda sebelum melanjutkan ke langkah berikutnya.
+
+### 3. Install Dependencies
+Disarankan menggunakan Python versi 3.9 atau 3.10.
+
+Dengan prasyarat yang sudah terpasang, sekarang jalankan perintah berikut untuk menginstal semua library Python yang dibutuhkan.
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Buat Akun Admin
+Jalankan skrip ini untuk membuat akun admin pertama Anda.
+
+```bash
+python create_admin.py
+```
+> "Ikuti prompt untuk memasukkan username dan password admin"
+
+### 5. Inisialisasi Database
+Jalankan skrip ini untuk mengisi data awal (seperti daftar mata kuliah) ke dalam database.
+
+```bash
+python seed_db.py
+```
+
+### 6. Jalankan Aplikasi
+
+```bash
+flask run
+```
+
+Akses aplikasi di browser Anda:
+📍 http://localhost:5000
+
+---
+
 ## 📁 Struktur Direktori (Singkat)
 
 ```
 hadirku-project/
-│
-├── app/
-│   ├── templates/       # HTML templates
-│   ├── static/          # CSS, JS, image
-│   ├── models.py        # Struktur tabel database
-│   ├── routes.py        # Routing endpoint
-│   ├── face_utils.py    # Fungsi face recognition
-│   └── __init__.py      # Setup Flask app
-│
-├── create_admin.py      # Setup akun admin awal
-├── seed_db.py           # Setup awal database
-├── requirements.txt     # Dependency
-├── README.md            # Dokumentasi ini
-└── ...
+├── instance/                  # Folder instance (otomatis dibuat oleh Flask)
+│   └── attendance.db          # File database SQLite 
+├── static/                    # Folder untuk aset statis 
+│   ├── captures/              # Menyimpan foto bukti presensi 
+│   ├── css/                   # File-file CSS 
+│   │   └── style.css
+│   └── js/                    # File-file JavaScript 
+│       └── main.js
+├── templates/                 # Folder untuk template HTML 
+│   ├── admin/                 # Template khusus untuk halaman admin 
+│   │   ├── index.html
+│   │   └── my_master.html
+│   ├── base.html              # Template dasar/induk
+│   ├── index.html             # Halaman utama presensi
+│   ├── login.html             # Halaman login
+│   ├── records.html           # Halaman riwayat presensi
+│   ├── register_face.html     # Halaman pendaftaran wajah
+│   └── signup.html            # Halaman pendaftaran akun
+├── app.py                     # Konfigurasi utama dan factory aplikasi Flask 
+├── auth.py                    # Rute untuk otentikasi (login, signup) 
+├── create_admin.py            # Skrip untuk membuat akun admin awal 
+├── face_utils.py              # Fungsi-fungsi untuk pengenalan wajah 
+├── main.py                    # Rute utama aplikasi (presensi, riwayat) 
+├── models.py                  # Definisi model database (SQLAlchemy) 
+├── README.md                  # File dokumentasi proyek 
+├── requirements.txt           # Daftar dependensi Python 
+└── seed_db.py                 # Skrip untuk mengisi data awal database 
 ```
 
 ---

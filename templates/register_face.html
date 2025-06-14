@@ -1,26 +1,34 @@
-{% extends "base.html" %} {% block title %}Daftarkan Wajah{% endblock %} {% block content %}
-<div class="text-center">
-    <h2>Daftarkan Wajah Anda, {{ current_user.name }}</h2>
-    <p>Posisikan wajah Anda dengan pencahayaan yang baik di dalam area kamera, lalu klik tombol "Ambil & Simpan Foto".</p>
+{% extends "base.html" %} {% block title %}Daftar Wajah{% endblock %} {% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2>Pendaftaran Wajah</h2>
+                </div>
+                <div class="card-body">
+                    <p>Posisikan wajah Anda dengan jelas di tengah kamera. Pastikan pencahayaan cukup dan tidak ada orang lain di dalam frame.</p>
 
-    <div class="camera-container mx-auto my-4">
-        <video id="video" width="640" height="480" autoplay playsinline></video>
-        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                    <div class="my-3">
+                        <video id="video" width="640" height="480" autoplay playsinline class="img-fluid rounded border"></video>
+                        <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+                    </div>
+
+                    <button id="capture-button" class="btn btn-success btn-lg">Ambil Gambar & Daftarkan Wajah</button>
+
+                </div>
+            </div>
+        </div>
     </div>
-
-    <button id="capture-btn" class="btn btn-success btn-lg">
-        Ambil & Simpan Foto
-    </button>
 </div>
-{% endblock %} {% block scripts %}
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', () => {
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
-        const captureBtn = document.getElementById('capture-btn');
-        const context = canvas.getContext('2d');
+        const captureButton = document.getElementById('capture-button');
 
-        // Akses webcam
+        // Mengakses webcam
         navigator.mediaDevices.getUserMedia({
                 video: true
             })
@@ -29,50 +37,68 @@
             })
             .catch(err => {
                 console.error("Error accessing webcam: ", err);
-                Swal.fire('Error', 'Tidak dapat mengakses kamera.', 'error');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kamera Gagal',
+                    text: 'Tidak dapat mengakses kamera. Mohon berikan izin pada browser Anda.'
+                });
+                captureButton.disabled = true;
             });
 
-        captureBtn.addEventListener('click', function() {
-            // Tampilkan loading
-            Swal.fire({
-                title: 'Menyimpan...',
-                text: 'Foto Anda sedang diproses dan disimpan.',
-                allowOutsideClick: false,
-                didOpen: () => {
-                    Swal.showLoading();
-                }
-            });
+        captureButton.addEventListener('click', async() => {
+            captureButton.disabled = true;
+            captureButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Memproses...';
 
-            // Ambil gambar dari video
+            const context = canvas.getContext('2d');
             context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const imageData = canvas.toDataURL('image/jpeg');
+            const dataUrl = canvas.toDataURL('image/jpeg');
 
-            // Kirim data ke server
-            fetch('/save_face', {
+            try {
+                const response = await fetch("{{ url_for('main.save_face') }}", {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        image_data: imageData
+                        image_data: dataUrl
                     }),
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        Swal.fire('Berhasil!', data.message, 'success')
-                            .then(() => {
-                                // Arahkan ke halaman utama setelah berhasil
-                                window.location.href = '/';
-                            });
-                    } else {
-                        Swal.fire('Gagal!', data.message, 'error');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire('Error', 'Terjadi kesalahan saat mengirim data.', 'error');
                 });
+
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    // --- INI BAGIAN YANG BARU: Menampilkan popup SweetAlert ---
+                    Swal.fire({
+                        icon: 'success', // Menampilkan ikon centang hijau
+                        title: 'Berhasil!', // Judul popup
+                        text: 'Wajah Anda berhasil didaftarkan', // Teks sesuai permintaan Anda
+                        confirmButtonText: 'OK', // Teks pada tombol
+                        confirmButtonColor: '#6259ca' // Warna tombol ungu seperti di gambar
+                    }).then((result) => {
+                        // Jika pengguna mengklik "OK", arahkan ke halaman utama
+                        if (result.isConfirmed) {
+                            window.location.href = "{{ url_for('main.index') }}";
+                        }
+                    });
+                } else {
+                    // Feedback untuk error juga menggunakan SweetAlert
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: result.message || 'Terjadi kesalahan saat pendaftaran.'
+                    });
+                    captureButton.disabled = false;
+                    captureButton.innerText = 'Ambil Gambar & Daftarkan Wajah';
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Kesalahan Jaringan',
+                    text: 'Tidak dapat menghubungi server. Silakan coba lagi.'
+                });
+                captureButton.disabled = false;
+                captureButton.innerText = 'Ambil Gambar & Daftarkan Wajah';
+            }
         });
     });
 </script>
