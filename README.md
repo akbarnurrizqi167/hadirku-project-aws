@@ -106,13 +106,13 @@ Anda wajib menginstal kedua alat berikut:
 #### B. CMake
 
 - Link Unduhan: cmake.org/download/
- - tutorial Singkat:
-   1.  link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
-   2. nkan installer.
-   3.  proses instalasi, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
-   . esaikan instalasi dengan mengklik "Next" hingga "Finish".
+  - tutorial Singkat:
+    1. Buka link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
+    2. Jalankan installer.
+    3. Saat proses instalas, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
+    4. Selesaikan  instalasi dengan mengklik "Next" hingga "Finish".
 
-- tuk Pengguna Linux (Debian/Ubuntu):
+- Utuk Pengguna Linux (Debian/Ubuntu):
 
 ```bash
 sudo apt-get update && sudo apt-get install build-essential cmake
