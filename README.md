@@ -81,7 +81,7 @@ Ikuti langkah-langkah berikut di terminal atau command prompt:
 ### 1. Clone Repository
 
 ```bash
-git clone [https://github.com/akbarnurrizqi167/hadirku-project.git](https://github.com/akbarnurrizqi167/hadirku-project.git)
+git clone https://github.com/akbarnurrizqi167/hadirku-project.git
 ```
 ```bash
 cd hadirku-project
@@ -95,22 +95,22 @@ Anda wajib menginstal kedua alat berikut:
 
 #### A. Visual Studio Build Tools (C++ Compiler)
 
-- Link Unduhan: visualstudio.microsoft.com/downloads/
+- Link Unduhan: https://visualstudio.microsoft.com/downloads/
   - Tutorial Singkat:
-    1. Buka link di atas, scroll ke bawah hingga menemukan Tools for Visual Studio.
-    2. Klik tombol Download pada opsi Build Tools for Visual Studio.
-    3. Jalankan installer yang telah diunduh.
-    4. Pada tab Workloads, centang kotak "Desktop development with C++". Ini adalah langkah paling penting.
-    5. Klik "Install" di pojok kanan bawah dan tunggu hingga prosesnya selesai.
+  1. Buka link di atas, scroll ke bawah hingga menemukan Tools for Visual Studio.
+  2. Klik tombol Download pada opsi Build Tools for Visual Studio.
+  3. Jalankan installer yang telah diunduh.
+  4. Pada tab Workloads, centang kotak "Desktop development with C++". Ini adalah langkah paling penting.
+  5. Klik "Install" di pojok kanan bawah dan tunggu hingga prosesnya selesai.
 
 #### B. CMake
 
-- Link Unduhan: cmake.org/download/
-  - tutorial Singkat:
-    1. Buka link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
-    2. Jalankan installer.
-    3. Saat proses instalas, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
-    4. Selesaikan  instalasi dengan mengklik "Next" hingga "Finish".
+- Link Unduhan: https://cmake.org/download/
+  - Tutorial Singkat:
+  1. Buka link di atas, cari versi "Windows x64 Installer" terbaru (file yang berakhiran .msi).
+  2. Jalankan installer.
+  3. Saat proses instalas, Anda akan diberikan pilihan untuk modifikasi PATH. Pilih opsi "Add CMake to the system PATH for all users". Ini wajib agar CMake bisa ditemukan oleh terminal.
+  4. Selesaikan  instalasi dengan mengklik "Next" hingga "Finish".
 
 - Utuk Pengguna Linux (Debian/Ubuntu):
 
