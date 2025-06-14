@@ -81,50 +81,6 @@ Ikuti langkah-langkah berikut di terminal atau command prompt:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/akbarnurrizqi167/hadirku-project.git
-```
-```bash
-cd hadirku-project
-```
-
-### 2. Install Dependencies
-
-> "Disarankan menggunakan python versi 3.10 atau dibawahnya"
-```bash
-pip install -r requirements.txt
-```
-
-### 3. Buat Akun Admin
-
-```bash
-python create_admin.py
-```
-> "Ikuti prompt untuk memasukkan username dan password admin"
-
-### 4. Inisialisasi Database
-
-```bash
-python seed_db.py
-```
-
-### 5. Jalankan Aplikasi
-
-```bash
-flask run
-```
-
-Akses aplikasi di browser:
-📍 `http://localhost:5000`
-
----
-
-## 🚀 Cara Menjalankan Hadirku di Komputer Lokal
-
-Ikuti langkah-langkah berikut di terminal atau command prompt:
-
-### 1. Clone Repository
-
-```bash
 git clone [https://github.com/akbarnurrizqi167/hadirku-project.git](https://github.com/akbarnurrizqi167/hadirku-project.git)
 ```
 ```bash
