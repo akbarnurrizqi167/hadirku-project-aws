@@ -5,16 +5,6 @@ from flask_login import LoginManager
 #Impor db dan model dari file models.py
 from models import db, User
 
-import os
-os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
-import warnings
-warnings.filterwarnings("ignore")
-
-import tensorflow as tf
-tf.get_logger().setLevel('ERROR')
-
 def create_app():
     """
     Factory function untuk membuat dan mengkonfigurasi aplikasi Flask.
