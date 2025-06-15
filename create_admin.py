@@ -3,14 +3,6 @@ from models import User
 from werkzeug.security import generate_password_hash
 import getpass
 import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Hilangkan info, warning, dan error dari TensorFlow
-
-import warnings
-warnings.filterwarnings("ignore")         # Hilangkan warning Python biasa
-
-import tensorflow as tf
-tf.get_logger().setLevel('ERROR')         # Hilangkan warning logger dari TensorFlow
-
 
 def create_admin_user():
     """
