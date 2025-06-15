@@ -8,7 +8,6 @@ from markupsafe import Markup
 
 from models import User, MataKuliah, AttendanceRecord, db
 
-
 class MyAdminIndexView(AdminIndexView):
     @expose('/')
     def index(self):
