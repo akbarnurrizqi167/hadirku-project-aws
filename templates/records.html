@@ -31,7 +31,8 @@
                     <span class="text-muted">Lokasi tidak tersedia</span> {% endif %}
                 </td>
                 <td>
-                    <img src="{{ url_for('static', filename=record.image_path) }}" alt="Foto Presensi" width="100" class="img-thumbnail">
+                    {# Perubahan di sini: Langsung gunakan URL S3 dari database #}
+                    <img src="{{ record.face_image_s3_url }}" alt="Foto Presensi" width="100" class="img-thumbnail">
                 </td>
             </tr>
             {% else %}
