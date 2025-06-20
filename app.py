@@ -2,7 +2,8 @@ import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager # Asumsi Hadirku menggunakan Flask-Login
+from flask_login import LoginManager
+from flask_migrate import Migrate  # <-- BARU DITAMBAHKAN
 
 # --- Inisialisasi Aplikasi Flask ---
 app = Flask(__name__)
@@ -35,6 +36,7 @@ db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app) # Jika Hadirku menggunakan Flask-Login
 login_manager.login_view = 'auth.login' # Ubah sesuai nama blueprint login Anda
+migrate = Migrate(app, db) # <-- BARU DITAMBAHKAN DAN INISIALISASI
 
 # Import dan daftarkan Blueprint Anda
 from auth import auth as auth_blueprint # Asumsi Anda punya blueprint bernama 'auth' di auth.py
@@ -64,5 +66,6 @@ def load_user(user_id):
 if __name__ == '__main__':
     # HANYA untuk development, jangan gunakan di produksi!
     with app.app_context():
-        db.create_all() # Buat tabel jika belum ada (gunakan Flask-Migrate untuk produksi!)
+        # db.create_all() # <-- Komentari atau hapus ini jika Anda menggunakan Flask-Migrate
+        pass # Gunakan 'flask db upgrade' untuk membuat/mengupdate tabel
     app.run(debug=True, host='0.0.0.0', port=5000)
